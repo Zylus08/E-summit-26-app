@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "305166207004",
+    "project_id": "e-summit-26",
+    "storage_bucket": "e-summit-26.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305166207004:android:8afaa78043157fedf8b7d9",
+        "android_client_info": {
+          "package_name": "com.example.e_summit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "305166207004-mq7afsgq5hsu4mp7f0lqbt2k34delvgg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.e_summit",
+            "certificate_hash": "48d6edd7772f37cc0586a973fa980c15517dd698"
+          }
+        },
+        {
+          "client_id": "305166207004-p8tnpcr8sphaqfjp1catbiq604tnj905.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCneqS4a2g6EDycFZ-pS7XK82gAw2ER1mk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "305166207004-p8tnpcr8sphaqfjp1catbiq604tnj905.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "305166207004-03akmqkp0uhk9m2muk52392k9gkfflou.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.esummit26"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305166207004:android:f0e7132bc3f2eceef8b7d9",
+        "android_client_info": {
+          "package_name": "com.example.esummit_26"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "305166207004-p8tnpcr8sphaqfjp1catbiq604tnj905.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCneqS4a2g6EDycFZ-pS7XK82gAw2ER1mk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "305166207004-p8tnpcr8sphaqfjp1catbiq604tnj905.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "305166207004-03akmqkp0uhk9m2muk52392k9gkfflou.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.esummit26"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
