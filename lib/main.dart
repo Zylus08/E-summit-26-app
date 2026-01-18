@@ -25,6 +25,7 @@ import 'screens/edit_profile_page.dart';
 import 'screens/verify_profile_otp_page.dart';
 import 'screens/events_page.dart';
 import 'screens/accessibility_settings_page.dart';
+import 'screens/qr_scanner_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,6 +82,7 @@ class ESummitApp extends StatelessWidget {
         '/verify_profile_otp': (_) => const VerifyProfileOtpPage(),
         '/events': (_) => const EventsPage(),
         '/accessibility': (_) => const AccessibilitySettingsPage(),
+        '/qr_scanner': (_) => const QRScannerPage(),
       },
     );
   }

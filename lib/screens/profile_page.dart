@@ -201,6 +201,55 @@ class ProfilePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
+                // Admin Section
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondaryAccent.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.secondaryAccent.withOpacity(0.3),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.admin_panel_settings,
+                            color: AppColors.secondaryAccent,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Admin Tools',
+                            style: AppTypography.bodyMedium.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.secondaryAccent,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.secondaryAccent,
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/qr_scanner');
+                          },
+                          icon: const Icon(Icons.qr_code_scanner),
+                          label: const Text('Scan Ticket QR'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
                 // Logout Button
                 SizedBox(
                   width: double.infinity,

@@ -23,9 +23,17 @@ class TicketService {
         .snapshots();
   }
 
-  /// Get a specific ticket by ID
-  Future<DocumentSnapshot<Map<String, dynamic>>> getTicket(String ticketId) {
-    return _db.collection('tickets').doc(ticketId).get();
+  /// Get a specific ticket by ticket ID
+  Future<DocumentSnapshot<Map<String, dynamic>>?> getTicketByTicketId(
+      String ticketId) async {
+    final query = await _db
+        .collection('tickets')
+        .where('ticketId', isEqualTo: ticketId)
+        .limit(1)
+        .get();
+
+    if (query.docs.isEmpty) return null;
+    return query.docs.first;
   }
 
   /// Generate QR data for a ticket
@@ -48,28 +56,42 @@ class TicketService {
       final uid = parts[2];
       final eventName = parts[3];
 
-      final ticketDoc = await _db.collection('tickets').doc(ticketId).get();
-      
-      if (!ticketDoc.exists) {
-        return {'valid': false, 'error': 'Ticket not found'};
+      // Find ticket by ticketId field (not document ID)
+      final querySnapshot = await _db
+          .collection('tickets')
+          .where('ticketId', isEqualTo: ticketId)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        return {'valid': false, 'error': 'Ticket not found in database'};
       }
 
-      final ticketData = ticketDoc.data()!;
-      
+      final ticketDoc = querySnapshot.docs.first;
+      final ticketData = ticketDoc.data();
+
+      // Verify ownership
       if (ticketData['uid'] != uid) {
         return {'valid': false, 'error': 'Ticket ownership mismatch'};
       }
 
+      // Check if already used
       if (ticketData['used'] == true) {
+        final usedAt = ticketData['usedAt'];
+        String usedAtStr = 'Unknown time';
+        if (usedAt is Timestamp) {
+          final date = usedAt.toDate();
+          usedAtStr = '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+        }
         return {
           'valid': false,
           'error': 'Ticket already used',
-          'usedAt': ticketData['usedAt'],
+          'usedAt': usedAtStr,
         };
       }
 
       // Mark ticket as used
-      await _db.collection('tickets').doc(ticketId).update({
+      await ticketDoc.reference.update({
         'used': true,
         'usedAt': FieldValue.serverTimestamp(),
       });
@@ -77,8 +99,10 @@ class TicketService {
       return {
         'valid': true,
         'ticketId': ticketId,
-        'eventName': eventName,
+        'eventName': ticketData['eventName'] ?? eventName,
         'userName': ticketData['userName'] ?? 'Unknown',
+        'ticketType': ticketData['ticketType'] ?? 'General',
+        'email': ticketData['email'] ?? '',
       };
     } catch (e) {
       return {'valid': false, 'error': e.toString()};
@@ -93,6 +117,11 @@ class TicketService {
     final user = _auth.currentUser;
     if (user == null) throw Exception('Not logged in');
 
+    // Get user data from Firestore for name
+    final userDoc = await _db.collection('users').doc(user.uid).get();
+    final userData = userDoc.data() ?? {};
+    final userName = userData['name'] ?? user.displayName ?? 'User';
+
     final docRef = _db.collection('tickets').doc();
     final ticketId = 'ES26-${docRef.id.substring(0, 8).toUpperCase()}';
 
@@ -100,10 +129,43 @@ class TicketService {
       'ticketId': ticketId,
       'uid': user.uid,
       'email': user.email,
-      'userName': user.displayName ?? 'User',
+      'userName': userName,
       'eventName': eventName,
       'ticketType': ticketType,
       'used': false,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    return ticketId;
+  }
+
+  /// Buy a ticket (actual purchase flow)
+  Future<String> purchaseTicket({
+    required String eventName,
+    required String ticketType,
+    required double price,
+  }) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('Not logged in');
+
+    // Get user data
+    final userDoc = await _db.collection('users').doc(user.uid).get();
+    final userData = userDoc.data() ?? {};
+    final userName = userData['name'] ?? user.displayName ?? 'User';
+
+    final docRef = _db.collection('tickets').doc();
+    final ticketId = 'ES26-${docRef.id.substring(0, 8).toUpperCase()}';
+
+    await docRef.set({
+      'ticketId': ticketId,
+      'uid': user.uid,
+      'email': user.email,
+      'userName': userName,
+      'eventName': eventName,
+      'ticketType': ticketType,
+      'price': price,
+      'used': false,
+      'purchasedAt': FieldValue.serverTimestamp(),
       'createdAt': FieldValue.serverTimestamp(),
     });
 
