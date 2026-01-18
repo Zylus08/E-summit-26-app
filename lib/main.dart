@@ -4,6 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'core/services/session_manager.dart';
+import 'core/services/accessibility_service.dart';
+import 'widgets/accessibility_widgets.dart';
 
 // screens
 import 'screens/landing_page.dart';
@@ -22,6 +24,7 @@ import 'screens/profile_page.dart';
 import 'screens/edit_profile_page.dart';
 import 'screens/verify_profile_otp_page.dart';
 import 'screens/events_page.dart';
+import 'screens/accessibility_settings_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +34,7 @@ void main() async {
   );
 
   await SessionManager().init();
+  await AccessibilityService().init();
 
   runApp(const ESummitApp());
 }
@@ -76,6 +80,7 @@ class ESummitApp extends StatelessWidget {
         '/edit_profile': (_) => const EditProfilePage(),
         '/verify_profile_otp': (_) => const VerifyProfileOtpPage(),
         '/events': (_) => const EventsPage(),
+        '/accessibility': (_) => const AccessibilitySettingsPage(),
       },
     );
   }
