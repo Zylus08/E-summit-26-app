@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_typography.dart';
 import '../widgets/cards.dart';
@@ -6,6 +7,29 @@ import '../widgets/ui_elements.dart';
 
 class HomeDashboard extends StatelessWidget {
   const HomeDashboard({super.key});
+
+  static const String _startupHandbookUrl = 'https://tr.ee/1G3XokPKWN';
+
+  Future<void> _openStartupHandbook(BuildContext context) async {
+    final uri = Uri.parse(_startupHandbookUrl);
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not open the link')),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +71,12 @@ class HomeDashboard extends StatelessWidget {
                 children: [
                   Text('Upcoming Events', style: AppTypography.heading3),
                   TextButton(
-                    onPressed: () {Navigator.pushNamed(context, '/events');},
-                    child: Text('View All', style: AppTypography.bodySmall.copyWith(color: AppColors.brandBlue)),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/events');
+                    },
+                    child: Text('View All',
+                        style: AppTypography.bodySmall
+                            .copyWith(color: AppColors.brandBlue)),
                   ),
                 ],
               ),
@@ -63,9 +91,10 @@ class HomeDashboard extends StatelessWidget {
                       title: 'Future of AI in Entrepreneurship',
                       date: 'March 15, 10:00 AM',
                       location: 'Main Auditorium',
-                      imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop',
+                      imageUrl:
+                          'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop',
                       onTap: () {
-                         Navigator.pushNamed(context, '/event_detail');
+                        Navigator.pushNamed(context, '/event_detail');
                       },
                     );
                   },
@@ -85,28 +114,52 @@ class HomeDashboard extends StatelessWidget {
                 childAspectRatio: 1.5,
                 children: [
                   _buildQuickAction(context, 'Speakers', Icons.mic, '/speakers'),
-                  _buildQuickAction(context, 'Startups', Icons.rocket_launch, '/startups'), // Placeholder route
-                  _buildQuickAction(context, 'Internship Fair', Icons.business_center, '/internship_fair'),
-                  _buildQuickAction(context, 'Timeline', Icons.timeline, '/timeline'), // Placeholder route
+                  _buildQuickAction(context, 'Startups', Icons.rocket_launch,
+                      '/startups'), // Placeholder route
+                  _buildQuickAction(context, 'Internship Fair',
+                      Icons.business_center, '/internship_fair'),
+                  _buildQuickAction(context, 'Timeline', Icons.timeline,
+                      '/timeline'), // Placeholder route
                 ],
               ),
-              const SizedBox(height: 80), // Space for floating CTA
+              const SizedBox(height: 120), // Space for floating CTAs
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-           Navigator.pushNamed(context, '/tickets');
-        },
-        backgroundColor: AppColors.primaryAccent,
-        icon: const Icon(Icons.confirmation_number, color: AppColors.white),
-        label: Text('BUY TICKETS', style: AppTypography.buttonText.copyWith(fontSize: 14)),
+      // Two Floating Action Buttons
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          // Startup Handbook Button
+          FloatingActionButton.extended(
+            heroTag: 'startup_handbook',
+            onPressed: () => _openStartupHandbook(context),
+            backgroundColor: AppColors.brandBlue,
+            icon: const Icon(Icons.menu_book, color: AppColors.white),
+            label: Text('STARTUP HANDBOOK',
+                style: AppTypography.buttonText.copyWith(fontSize: 12)),
+          ),
+          const SizedBox(height: 12),
+          // Buy Tickets Button
+          FloatingActionButton.extended(
+            heroTag: 'buy_tickets',
+            onPressed: () {
+              Navigator.pushNamed(context, '/tickets');
+            },
+            backgroundColor: AppColors.primaryAccent,
+            icon: const Icon(Icons.confirmation_number, color: AppColors.white),
+            label: Text('BUY TICKETS',
+                style: AppTypography.buttonText.copyWith(fontSize: 14)),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildQuickAction(BuildContext context, String title, IconData icon, String route) {
+  Widget _buildQuickAction(
+      BuildContext context, String title, IconData icon, String route) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, route);
@@ -122,7 +175,9 @@ class HomeDashboard extends StatelessWidget {
           children: [
             Icon(icon, color: AppColors.brandBlue, size: 32),
             const SizedBox(height: 8),
-            Text(title, style: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+            Text(title,
+                style: AppTypography.bodyMedium
+                    .copyWith(fontWeight: FontWeight.w600)),
           ],
         ),
       ),
